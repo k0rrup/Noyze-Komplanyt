@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Beat Catalog — Noyze Komplanynt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:wght@300;400;500;700&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+:root {
+  --black:   #050505;
+  --ink:     #0c0c0c;
+  --panel:   #101010;
+  --card:    #131313;
+  --card2:   #181818;
+  --border:  #1e1e1e;
+  --border2: #282828;
+  --yellow:  #f5d000;
+  --yellow2: #e8c400;
+  --ydim:    rgba(245,208,0,0.12);
+  --white:   #f2eed8;
+  --muted:   #444;
+  --mid:     #6e6e6e;
+  --fd: 'Anton', sans-serif;
+  --fb: 'Archivo', sans-serif;
+  --fm: 'Share Tech Mono', monospace;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{background:var(--black);color:var(--white);font-family:var(--fb);overflow-x:hidden;cursor:none;min-height:100vh}
+
+/* cursor */
+#cur{position:fixed;width:8px;height:8px;background:var(--yellow);border-radius:50%;pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:width .15s,height .15s,opacity .2s}
+#cur2{position:fixed;width:30px;height:30px;border:1px solid rgba(245,208,0,.3);border-radius:50%;pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:width .3s,height .3s}
+body.hov #cur{width:4px;height:4px}
+body.hov #cur2{width:48px;height:48px;border-color:rgba(245,208,0,.55)}
+
+/* scanlines */
+body::after{content:'';position:fixed;inset:0;pointer-events:none;z-index:500;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 4px)}
+
+/* ── NAV ── */
+nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;justify-content:space-between;align-items:center;padding:18px 48px;background:rgba(5,5,5,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(12px)}
+.logo{font-family:var(--fd);font-size:15px;letter-spacing:4px;text-transform:uppercase;text-decoration:none;color:var(--white)}
+.logo em{color:var(--yellow);font-style:normal}
+.nav-r{display:flex;gap:32px;align-items:center}
+.nav-r a{font-family:var(--fm);font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);text-decoration:none;transition:color .2s}
+.nav-r a:hover{color:var(--white)}
+.nav-r a.active{color:var(--yellow)}
+.nav-book{background:var(--yellow)!important;color:var(--black)!important;padding:8px 20px;font-weight:700}
+.nav-book:hover{background:var(--yellow2)!important}
+
+/* ── PAGE HEADER ── */
+.page-head{padding:120px 48px 60px;position:relative;overflow:hidden;border-bottom:1px solid var(--border)}
+.ph-dots{position:absolute;inset:0;background-image:radial-gradient(circle,rgba(245,208,0,.08) 1px,transparent 1px);background-size:28px 28px;pointer-events:none}
+.ph-ghost{position:absolute;right:-20px;bottom:-40px;font-family:var(--fd);font-size:clamp(100px,16vw,220px);color:rgba(245,208,0,.035);letter-spacing:-6px;pointer-events:none;user-select:none;line-height:1}
+.ph-inner{position:relative;z-index:1;display:flex;justify-content:space-between;align-items:flex-end;flex-wrap:wrap;gap:24px}
+.ph-left{}
+.ph-tag{font-family:var(--fm);font-size:10px;letter-spacing:4px;text-transform:uppercase;color:var(--yellow);margin-bottom:12px;display:flex;align-items:center;gap:10px}
+.ph-tag-line{width:24px;height:1px;background:var(--yellow)}
+.ph-title{font-family:var(--fd);font-size:clamp(52px,8vw,100px);text-transform:uppercase;line-height:.9;letter-spacing:1px}
+.ph-sub{font-family:var(--fm);font-size:12px;letter-spacing:1px;color:var(--mid);margin-top:18px;line-height:1.8}
+.ph-stats{display:flex;gap:40px;align-items:flex-end}
+.ph-stat-num{font-family:var(--fd);font-size:40px;color:var(--yellow);line-height:1}
+.ph-stat-lbl{font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--muted);text-transform:uppercase;margin-top:4px}
+
+/* ── FILTER BAR ── */
+.filter-bar{position:sticky;top:57px;z-index:190;background:rgba(10,10,10,.97);border-bottom:1px solid var(--border);backdrop-filter:blur(10px);padding:0 48px}
+.filter-inner{display:flex;align-items:stretch;gap:0;overflow-x:auto;scrollbar-width:none}
+.filter-inner::-webkit-scrollbar{display:none}
+.filter-group{display:flex;align-items:center;gap:0;border-right:1px solid var(--border);padding:14px 28px 14px 0;margin-right:28px;flex-shrink:0}
+.filter-group:last-child{border-right:none}
+.fg-label{font-family:var(--fm);font-size:9px;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-right:14px;white-space:nowrap}
+.filter-btns{display:flex;gap:6px;flex-wrap:nowrap}
+.fb{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;background:transparent;color:var(--mid);border:1px solid var(--border);padding:6px 14px;cursor:none;transition:all .18s;white-space:nowrap;flex-shrink:0}
+.fb:hover{color:var(--white);border-color:var(--border2)}
+.fb.on{background:var(--yellow);color:var(--black);border-color:var(--yellow);font-weight:700}
+
+/* sort + count row */
+.toolbar{padding:18px 48px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.tb-count{font-family:var(--fm);font-size:11px;letter-spacing:2px;color:var(--mid)}
+.tb-count span{color:var(--yellow)}
+.tb-sort{display:flex;align-items:center;gap:12px}
+.tb-sort-lbl{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted)}
+.sort-btn{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;background:transparent;color:var(--mid);border:none;cursor:none;padding:4px 10px;transition:color .2s;border-bottom:1px solid transparent}
+.sort-btn:hover{color:var(--white)}
+.sort-btn.on{color:var(--yellow);border-color:var(--yellow)}
+
+/* ── CATALOG GRID ── */
+.catalog{padding:32px 48px 80px;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:1px;background:var(--border)}
+
+/* ── BEAT CARD ── */
+.bcard{background:var(--ink);position:relative;transition:background .2s;display:flex;flex-direction:column}
+.bcard:hover{background:var(--card)}
+.bcard.hidden{display:none}
+.bcard.playing .bc-art{border-color:var(--yellow)}
+
+/* art zone */
+.bc-art{margin:20px 20px 0;aspect-ratio:1;background:var(--panel);border:1px solid var(--border);position:relative;overflow:hidden;transition:border-color .3s;flex-shrink:0;cursor:none}
+.bc-art-bg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+/* waveform viz */
+.mini-wave{display:flex;align-items:flex-end;gap:2px;height:60%;width:80%;justify-content:center}
+.mwb{width:4px;border-radius:1px;background:var(--border2);transition:background .3s,height .15s}
+.bcard.playing .mwb{background:var(--yellow);animation:mwAnim 0.6s ease-in-out infinite alternate}
+@keyframes mwAnim{to{height:100% !important}}
+/* progress overlay */
+.bc-prog-bar{position:absolute;bottom:0;left:0;height:2px;background:var(--yellow);width:0%;transition:width .9s linear}
+/* play overlay */
+.bc-play-overlay{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;background:rgba(0,0,0,.3)}
+.bcard:hover .bc-play-overlay{opacity:1}
+.bcard.playing .bc-play-overlay{opacity:1}
+.play-circle{width:52px;height:52px;border:1.5px solid var(--yellow);border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s}
+.play-circle:hover{background:rgba(245,208,0,.15)}
+.ptri{width:0;height:0;border-top:10px solid transparent;border-bottom:10px solid transparent;border-left:16px solid var(--yellow);margin-left:3px}
+.ppause{display:flex;gap:5px}
+.ppause span{width:4px;height:18px;background:var(--yellow);display:block}
+
+/* new / exclusive badge */
+.bc-badge{position:absolute;top:10px;left:10px;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;padding:4px 10px;z-index:2}
+.bc-badge.new{background:var(--yellow);color:var(--black)}
+.bc-badge.excl{background:transparent;border:1px solid var(--yellow);color:var(--yellow)}
+.bc-badge.sold{background:var(--muted);color:var(--black)}
+
+/* info */
+.bc-info{padding:18px 20px 16px;flex:1;display:flex;flex-direction:column}
+.bc-name{font-family:var(--fd);font-size:28px;text-transform:uppercase;letter-spacing:1px;color:var(--white);line-height:1;margin-bottom:10px}
+.bc-meta{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.bc-chip{font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;border:1px solid var(--border2);color:var(--mid);padding:3px 9px}
+.bc-chip.hl{border-color:rgba(245,208,0,.3);color:rgba(245,208,0,.7)}
+
+/* waveform scrub */
+.bc-scrub{height:28px;background:var(--panel);border:1px solid var(--border);margin-bottom:14px;position:relative;cursor:none;overflow:hidden}
+.bc-scrub-fill{position:absolute;inset:0;background:var(--ydim);width:0%;transition:width .9s linear}
+.bc-scrub-bars{position:absolute;inset:0;display:flex;align-items:center;gap:1px;padding:0 6px}
+.sb{flex:1;border-radius:1px;background:var(--border2);min-width:2px;transition:background .3s}
+.bcard.playing .sb{background:rgba(245,208,0,.25)}
+
+/* licensing */
+.bc-licensing{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-top:auto;padding-top:12px;border-top:1px solid var(--border)}
+.lic-tier{display:flex;flex-direction:column;align-items:center;padding:10px 6px 12px;border:1px solid var(--border);background:transparent;cursor:none;transition:all .2s;position:relative}
+.lic-tier:hover{border-color:var(--border2);background:var(--panel)}
+.lic-tier.featured{border-color:rgba(245,208,0,.4);background:rgba(245,208,0,.04)}
+.lic-tier.featured:hover{border-color:var(--yellow);background:rgba(245,208,0,.08)}
+.lic-name{font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);margin-bottom:6px}
+.lic-tier.featured .lic-name{color:rgba(245,208,0,.7)}
+.lic-price{font-family:var(--fd);font-size:22px;color:var(--white);line-height:1;letter-spacing:1px}
+.lic-tier.featured .lic-price{color:var(--yellow)}
+.lic-type{font-family:var(--fm);font-size:8px;letter-spacing:1px;color:var(--muted);margin-top:3px}
+.lic-buy{margin-top:8px;font-family:var(--fm);font-size:9px;letter-spacing:2px;text-transform:uppercase;color:var(--mid);border:1px solid var(--border);background:transparent;padding:5px 10px;cursor:none;width:100%;transition:all .2s}
+.lic-tier:hover .lic-buy{color:var(--white);border-color:var(--border2)}
+.lic-tier.featured .lic-buy{color:var(--yellow);border-color:rgba(245,208,0,.4)}
+.lic-tier.featured:hover .lic-buy{background:var(--yellow);color:var(--black);border-color:var(--yellow)}
+
+/* no results */
+.no-results{grid-column:1/-1;padding:80px 48px;text-align:center;display:none}
+.nr-title{font-family:var(--fd);font-size:48px;text-transform:uppercase;color:var(--border2);letter-spacing:2px;margin-bottom:12px}
+.nr-sub{font-family:var(--fm);font-size:12px;letter-spacing:2px;color:var(--muted)}
+
+/* ── LICENSE MODAL ── */
+.modal-wrap{position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(4px)}
+.modal-wrap.open{opacity:1;pointer-events:all}
+.modal{background:var(--ink);border:1px solid var(--border2);width:100%;max-width:560px;max-height:90vh;overflow-y:auto;position:relative;transform:translateY(20px);transition:transform .25s}
+.modal-wrap.open .modal{transform:none}
+.modal-head{padding:28px 28px 20px;border-bottom:1px solid var(--border);display:flex;justify-content:space-between;align-items:flex-start}
+.modal-title{font-family:var(--fd);font-size:32px;text-transform:uppercase;letter-spacing:1px;line-height:1}
+.modal-sub{font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--mid);margin-top:6px}
+.modal-close{background:transparent;border:1px solid var(--border);color:var(--mid);width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:none;font-size:16px;flex-shrink:0;transition:border-color .2s,color .2s}
+.modal-close:hover{border-color:var(--yellow);color:var(--yellow)}
+.modal-body{padding:24px 28px}
+.modal-tiers{display:flex;flex-direction:column;gap:14px}
+.modal-tier{border:1px solid var(--border);padding:20px 22px;transition:border-color .2s;cursor:none}
+.modal-tier:hover{border-color:var(--border2)}
+.modal-tier.best{border-color:rgba(245,208,0,.4);background:rgba(245,208,0,.03)}
+.modal-tier.best:hover{border-color:var(--yellow)}
+.mt-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.mt-name{font-family:var(--fd);font-size:24px;text-transform:uppercase;letter-spacing:1px}
+.mt-price{font-family:var(--fd);font-size:28px;color:var(--yellow);letter-spacing:1px}
+.mt-features{display:flex;flex-direction:column;gap:8px;margin-bottom:18px}
+.mt-feat{display:flex;align-items:center;gap:10px;font-family:var(--fm);font-size:11px;letter-spacing:1px;color:var(--mid)}
+.mt-feat-dot{width:5px;height:5px;background:var(--yellow);border-radius:50%;flex-shrink:0}
+.mt-feat-dot.no{background:var(--muted)}
+.mt-cta{width:100%;font-family:var(--fm);font-size:11px;letter-spacing:3px;text-transform:uppercase;border:1px solid var(--border2);background:transparent;color:var(--mid);padding:13px;cursor:none;transition:all .2s}
+.modal-tier.best .mt-cta{border-color:rgba(245,208,0,.4);color:var(--yellow)}
+.modal-tier.best .mt-cta:hover,.modal-tier:hover .mt-cta{background:var(--yellow);color:var(--black);border-color:var(--yellow)}
+.mt-badge{font-family:var(--fm);font-size:8px;letter-spacing:2px;text-transform:uppercase;background:var(--yellow);color:var(--black);padding:3px 8px}
+
+/* ── FOOTER ── */
+.page-footer{padding:48px;border-top:1px solid var(--border);display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:20px}
+.pf-logo{font-family:var(--fd);font-size:15px;letter-spacing:4px;text-transform:uppercase;color:var(--white);text-decoration:none}
+.pf-logo em{color:var(--yellow);font-style:normal}
+.pf-links{display:flex;gap:28px}
+.pf-links a{font-family:var(--fm);font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color .2s}
+.pf-links a:hover{color:var(--white)}
+.pf-copy{font-family:var(--fm);font-size:10px;letter-spacing:1px;color:var(--muted)}
+
+/* animations */
+.bcard{opacity:0;transform:translateY(16px);transition:opacity .5s ease,transform .5s ease,background .2s}
+.bcard.vis{opacity:1;transform:none}
+.bcard.hidden{opacity:0!important;transform:translateY(8px)!important;pointer-events:none}
+
+@media(max-width:900px){
+  nav{padding:14px 20px}
+  .nav-r a:not(.nav-book){display:none}
+  .page-head{padding:90px 20px 40px}
+  .filter-bar{padding:0 12px}
+  .filter-group{padding:12px 16px 12px 0;margin-right:16px}
+  .toolbar,.catalog{padding-left:20px;padding-right:20px}
+  .catalog{grid-template-columns:1fr}
+  .page-footer{padding:32px 20px;flex-direction:column;align-items:flex-start}
+}
+</style>
+</head>
+<body>
+
+<div id="cur"></div>
+<div id="cur2"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="index.html" class="logo">Noyze <em>Komplanynt</em></a>
+  <div class="nav-r">
+    <a href="index.html">Home</a>
+    <a href="beats.html" class="active">Beats</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#booking" class="nav-book">Book Now</a>
+  </div>
+</nav>
+
+<!-- PAGE HEADER -->
+<div class="page-head">
+  <div class="ph-dots"></div>
+  <div class="ph-ghost">BEATS</div>
+  <div class="ph-inner">
+    <div class="ph-left">
+      <div class="ph-tag"><span class="ph-tag-line"></span>Full Catalog</div>
+      <div class="ph-title">Beat<br>Catalog</div>
+      <p class="ph-sub">All beats watermarked for preview · Full files delivered on purchase<br>Exclusive licenses = one buyer only · Custom available on request</p>
+    </div>
+    <div class="ph-stats">
+      <div>
+        <div class="ph-stat-num" id="totalCount">24</div>
+        <div class="ph-stat-lbl">Beats Available</div>
+      </div>
+      <div>
+        <div class="ph-stat-num">3</div>
+        <div class="ph-stat-lbl">License Tiers</div>
+      </div>
+      <div>
+        <div class="ph-stat-num">48hr</div>
+        <div class="ph-stat-lbl">Delivery</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- FILTER BAR -->
+<div class="filter-bar">
+  <div class="filter-inner">
+    <div class="filter-group">
+      <span class="fg-label">Genre</span>
+      <div class="filter-btns" id="genreFilters">
+        <button class="fb on" data-filter="genre" data-val="all">All</button>
+        <button class="fb" data-filter="genre" data-val="trap">Trap</button>
+        <button class="fb" data-filter="genre" data-val="drill">Drill</button>
+        <button class="fb" data-filter="genre" data-val="hiphop">Hip-Hop</button>
+        <button class="fb" data-filter="genre" data-val="rnb">R&amp;B</button>
+        <button class="fb" data-filter="genre" data-val="afrobeat">Afrobeat</button>
+        <button class="fb" data-filter="genre" data-val="club">Club</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="fg-label">BPM</span>
+      <div class="filter-btns" id="bpmFilters">
+        <button class="fb on" data-filter="bpm" data-val="all">All</button>
+        <button class="fb" data-filter="bpm" data-val="slow">60–90</button>
+        <button class="fb" data-filter="bpm" data-val="mid">90–120</button>
+        <button class="fb" data-filter="bpm" data-val="fast">120–150</button>
+        <button class="fb" data-filter="bpm" data-val="hyper">150+</button>
+      </div>
+    </div>
+    <div class="filter-group">
+      <span class="fg-label">Mood</span>
+      <div class="filter-btns" id="moodFilters">
+        <button class="fb on" data-filter="mood" data-val="all">All</button>
+        <button class="fb" data-filter="mood" data-val="dark">Dark</button>
+        <button class="fb" data-filter="mood" data-val="hard">Hard</button>
+        <button class="fb" data-filter="mood" data-val="melodic">Melodic</button>
+        <button class="fb" data-filter="mood" data-val="chill">Chill</button>
+        <button class="fb" data-filter="mood" data-val="energetic">Energetic</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOOLBAR -->
+<div class="toolbar">
+  <div class="tb-count">Showing <span id="showCount">24</span> beats</div>
+  <div class="tb-sort">
+    <span class="tb-sort-lbl">Sort:</span>
+    <button class="sort-btn on" data-sort="newest">Newest</button>
+    <button class="sort-btn" data-sort="price-lo">Price ↑</button>
+    <button class="sort-btn" data-sort="price-hi">Price ↓</button>
+    <button class="sort-btn" data-sort="bpm">BPM</button>
+  </div>
+</div>
+
+<!-- CATALOG GRID -->
+<div class="catalog" id="catalog">
+  <div class="no-results" id="noResults">
+    <div class="nr-title">No Beats Found</div>
+    <div class="nr-sub">Try adjusting your filters</div>
+  </div>
+</div>
+
+<!-- LICENSE MODAL -->
+<div class="modal-wrap" id="modal">
+  <div class="modal">
+    <div class="modal-head">
+      <div>
+        <div class="modal-title" id="modal-beat-name">Beat Name</div>
+        <div class="modal-sub" id="modal-beat-meta">BPM · Key · Genre</div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-tiers" id="modal-tiers"></div>
+    </div>
+  </div>
+</div>
+
+<!-- FOOTER -->
+<div class="page-footer">
+  <a href="index.html" class="pf-logo">Noyze <em>Komplanynt</em></a>
+  <div class="pf-links">
+    <a href="index.html">Home</a>
+    <a href="index.html#services">Services</a>
+    <a href="index.html#booking">Bookings</a>
+  </div>
+  <div class="pf-copy">© 2025 Noyze Komplanynt</div>
+</div>
+
+<script>
+/* ─── DATA ─── */
+const BEATS = [
+  {id:1,name:'Blackout',bpm:140,key:'A Min',genre:'trap',mood:'dark',tag:'new',waveH:[30,55,80,40,95,65,45,100,60,75,35,90,50,88,42,70,82,48,72,60,35,80,55,90,40],prices:[45,150,500],order:1},
+  {id:2,name:'Static',bpm:95,key:'F# Min',genre:'drill',mood:'hard',tag:'excl',waveH:[50,75,40,90,60,80,35,70,95,45,65,85,50,78,42,68,92,55,74,62,44,80,58,88,35],prices:[55,175,600],order:2},
+  {id:3,name:'Red Zone',bpm:160,key:'E Min',genre:'club',mood:'energetic',tag:'new',waveH:[65,40,90,55,80,35,95,60,75,45,88,50,70,38,85,55,78,42,92,62,48,76,60,88,45],prices:[65,200,750],order:3},
+  {id:4,name:'Phantom',bpm:88,key:'D Min',genre:'trap',mood:'dark',tag:'',waveH:[40,70,30,85,55,75,42,92,60,48,80,38,65,88,45,72,50,84,36,68,55,78,44,90,35],prices:[45,150,500],order:4},
+  {id:5,name:'Wavelength',bpm:105,key:'G Min',genre:'hiphop',mood:'melodic',tag:'new',waveH:[55,80,45,70,90,38,75,55,85,42,68,92,50,78,35,88,60,72,40,82,55,68,80,45,90],prices:[50,160,550],order:5},
+  {id:6,name:'Neon Rain',bpm:78,key:'B♭ Maj',genre:'rnb',mood:'chill',tag:'',waveH:[25,60,80,40,70,55,85,30,65,90,45,75,50,80,38,68,88,42,72,55,35,78,60,85,40],prices:[40,130,450],order:6},
+  {id:7,name:'Concrete',bpm:130,key:'C Min',genre:'drill',mood:'hard',tag:'excl',waveH:[70,45,90,60,80,35,95,55,75,42,88,50,70,38,85,62,78,45,92,55,48,80,65,90,42],prices:[60,190,700],order:7},
+  {id:8,name:'Voltage',bpm:155,key:'A Min',genre:'club',mood:'energetic',tag:'new',waveH:[80,50,95,65,40,88,55,78,35,92,60,75,45,85,50,70,90,42,80,58,68,88,45,72,60],prices:[65,200,800],order:8},
+  {id:9,name:'Hollow',bpm:92,key:'E♭ Min',genre:'hiphop',mood:'dark',tag:'',waveH:[35,65,50,80,42,75,55,88,40,70,85,48,72,35,90,58,68,42,82,50,62,78,45,85,38],prices:[45,150,500],order:9},
+  {id:10,name:'Griot',bpm:112,key:'F Maj',genre:'afrobeat',mood:'melodic',tag:'new',waveH:[60,80,45,90,55,75,40,88,62,50,78,35,85,55,70,42,90,58,68,80,45,72,88,50,65],prices:[55,170,600],order:10},
+  {id:11,name:'Glacier',bpm:82,key:'D♭ Maj',genre:'rnb',mood:'chill',tag:'',waveH:[30,55,75,42,65,85,38,70,55,80,45,68,88,50,72,35,80,58,68,42,75,55,85,40,60],prices:[40,130,450],order:11},
+  {id:12,name:'Sundial',bpm:118,key:'G Maj',genre:'afrobeat',mood:'energetic',tag:'',waveH:[55,78,40,88,62,50,80,42,70,90,45,75,55,85,38,68,88,50,72,42,80,60,75,45,88],prices:[55,170,600],order:12},
+  {id:13,name:'Killshot',bpm:145,key:'B Min',genre:'trap',mood:'hard',tag:'excl',waveH:[85,50,95,65,42,90,58,78,35,92,62,75,45,88,50,70,40,85,58,68,88,45,78,55,90],prices:[70,220,900],order:13},
+  {id:14,name:'Eclipse',bpm:98,key:'F# Min',genre:'hiphop',mood:'dark',tag:'',waveH:[42,68,55,80,38,72,88,45,65,82,50,75,40,88,55,68,85,42,72,58,78,45,65,80,38],prices:[50,160,550],order:14},
+  {id:15,name:'Afterburn',bpm:165,key:'C# Min',genre:'club',mood:'energetic',tag:'new',waveH:[78,45,92,60,85,38,95,55,75,42,88,52,72,40,90,60,80,45,88,55,70,42,85,58,78],prices:[70,220,850],order:15},
+  {id:16,name:'Low Tide',bpm:75,key:'A♭ Maj',genre:'rnb',mood:'chill',tag:'',waveH:[22,55,70,38,60,82,35,65,50,78,42,68,85,45,70,35,80,55,65,40,72,58,82,45,55],prices:[38,120,420],order:16},
+  {id:17,name:'Sovereign',bpm:110,key:'G Min',genre:'hiphop',mood:'melodic',tag:'',waveH:[50,75,42,88,58,70,40,85,55,78,38,80,60,72,45,88,52,68,82,48,70,60,78,45,85],prices:[50,160,550],order:17},
+  {id:18,name:'Lagos',bpm:108,key:'D Maj',genre:'afrobeat',mood:'energetic',tag:'new',waveH:[58,80,42,88,65,50,78,38,85,55,70,42,88,60,75,45,85,52,68,80,45,72,88,50,65],prices:[55,175,600],order:18},
+  {id:19,name:'Wrath',bpm:138,key:'B Min',genre:'drill',mood:'hard',tag:'',waveH:[75,45,90,58,82,38,92,55,78,42,88,50,72,40,85,58,70,42,88,55,68,80,45,78,55],prices:[60,190,700],order:19},
+  {id:20,name:'Smoke Signal',bpm:96,key:'C Min',genre:'trap',mood:'dark',tag:'',waveH:[38,65,52,80,42,70,88,45,62,78,40,72,85,48,68,38,80,55,65,42,72,58,80,45,62],prices:[45,150,500],order:20},
+  {id:21,name:'Cascade',bpm:120,key:'E Maj',genre:'rnb',mood:'melodic',tag:'new',waveH:[45,72,55,85,40,75,55,88,42,68,82,50,70,38,88,55,72,42,80,58,65,78,45,85,38],prices:[45,145,500],order:21},
+  {id:22,name:'Pressure',bpm:142,key:'F Min',genre:'trap',mood:'hard',tag:'',waveH:[80,48,92,62,42,88,55,78,38,90,60,72,45,85,52,68,88,45,75,58,70,42,82,55,88],prices:[55,175,600],order:22},
+  {id:23,name:'Chrome',bpm:115,key:'D Min',genre:'hiphop',mood:'melodic',tag:'',waveH:[52,78,40,85,58,70,42,88,55,75,38,82,60,70,45,88,52,65,80,48,72,58,78,42,85],prices:[50,160,550],order:23},
+  {id:24,name:'Nkosi',bpm:102,key:'G Maj',genre:'afrobeat',mood:'chill',tag:'',waveH:[42,65,55,78,38,70,85,45,62,80,48,72,58,85,40,70,55,80,42,68,78,50,65,80,42],prices:[50,160,550],order:24}
+];
+
+const TIER_NAMES   = ['Lease','Premium','Exclusive'];
+const TIER_TYPES   = ['MP3 Lease','WAV + MP3','Unlimited Rights'];
+const TIER_FEATS   = [
+  ['MP3 file (320kbps)','Up to 50k streams','Non-commercial use','Credit required','Shared license'],
+  ['WAV + MP3 files','Up to 500k streams','Commercial use','Credit required','Shared license'],
+  ['All stems + WAV','Unlimited streams','Full ownership','No credit required','One buyer only']
+];
+
+/* ─── STATE ─── */
+let activeFilters = {genre:'all', bpm:'all', mood:'all'};
+let activeSort = 'newest';
+let currentPlayId = null;
+let playTimer = null;
+let playProgress = 0;
+
+/* ─── CURSOR ─── */
+const cur=document.getElementById('cur'),cur2=document.getElementById('cur2');
+let mx=0,my=0,rx=0,ry=0;
+document.addEventListener('mousemove',e=>{mx=e.clientX;my=e.clientY;cur.style.left=mx+'px';cur.style.top=my+'px'});
+(function loop(){rx+=(mx-rx)*.11;ry+=(my-ry)*.11;cur2.style.left=rx+'px';cur2.style.top=ry+'px';requestAnimationFrame(loop)})();
+
+/* ─── BPM BUCKET ─── */
+function bpmBucket(bpm){
+  if(bpm<90)return'slow';
+  if(bpm<120)return'mid';
+  if(bpm<150)return'fast';
+  return'hyper';
+}
+
+/* ─── BUILD CARDS ─── */
+function buildCatalog(){
+  const catalog = document.getElementById('catalog');
+  // remove old cards (keep no-results div)
+  catalog.querySelectorAll('.bcard').forEach(c=>c.remove());
+
+  let filtered = BEATS.filter(b=>{
+    if(activeFilters.genre!=='all'&&b.genre!==activeFilters.genre)return false;
+    if(activeFilters.bpm!=='all'&&bpmBucket(b.bpm)!==activeFilters.bpm)return false;
+    if(activeFilters.mood!=='all'&&b.mood!==activeFilters.mood)return false;
+    return true;
+  });
+
+  // sort
+  if(activeSort==='price-lo') filtered.sort((a,b)=>a.prices[0]-b.prices[0]);
+  else if(activeSort==='price-hi') filtered.sort((a,b)=>b.prices[0]-a.prices[0]);
+  else if(activeSort==='bpm') filtered.sort((a,b)=>a.bpm-b.bpm);
+  else filtered.sort((a,b)=>a.order-b.order);
+
+  const nr = document.getElementById('noResults');
+  nr.style.display = filtered.length===0?'block':'none';
+  document.getElementById('showCount').textContent = filtered.length;
+
+  filtered.forEach((beat,idx)=>{
+    const card = document.createElement('div');
+    card.className='bcard';
+    card.id='card-'+beat.id;
+    card.dataset.id=beat.id;
+
+    // wave bars html
+    const wbHtml = beat.waveH.map((h,i)=>`<div class="mwb" style="height:${h}%;animation-delay:${(i*0.04).toFixed(2)}s;animation-duration:${(0.4+Math.random()*0.4).toFixed(2)}s"></div>`).join('');
+    // scrub bars
+    const sbHtml = beat.waveH.map(h=>`<div class="sb" style="height:${Math.round(h*0.7+10)}%"></div>`).join('');
+
+    const badgeHtml = beat.tag
+      ? `<div class="bc-badge ${beat.tag}">${beat.tag==='new'?'New':beat.tag==='excl'?'Exclusive':'Sold'}</div>`
+      : '';
+
+    const licHtml = TIER_NAMES.map((name,i)=>`
+      <button class="lic-tier${i===1?' featured':''}" onclick="openModal(${beat.id})">
+        <div class="lic-name">${name}</div>
+        <div class="lic-price">$${beat.prices[i]}</div>
+        <div class="lic-type">${TIER_TYPES[i]}</div>
+        <div class="lic-buy">License</div>
+      </button>`).join('');
+
+    card.innerHTML=`
+      <div class="bc-art" onclick="togglePlay(${beat.id})">
+        ${badgeHtml}
+        <div class="bc-art-bg">
+          <div class="mini-wave" id="mw-${beat.id}">${wbHtml}</div>
+        </div>
+        <div class="bc-play-overlay">
+          <div class="play-circle" id="pc-${beat.id}">
+            <div class="ptri" id="pt-${beat.id}"></div>
+          </div>
+        </div>
+        <div class="bc-prog-bar" id="pb-${beat.id}"></div>
+      </div>
+      <div class="bc-info">
+        <div class="bc-name">${beat.name}</div>
+        <div class="bc-meta">
+          <span class="bc-chip hl">${beat.bpm} BPM</span>
+          <span class="bc-chip hl">${beat.key}</span>
+          <span class="bc-chip">${beat.genre.charAt(0).toUpperCase()+beat.genre.slice(1)}</span>
+          <span class="bc-chip">${beat.mood.charAt(0).toUpperCase()+beat.mood.slice(1)}</span>
+        </div>
+        <div class="bc-scrub" onclick="togglePlay(${beat.id})" title="Preview">
+          <div class="bc-scrub-fill" id="sf-${beat.id}"></div>
+          <div class="bc-scrub-bars">${sbHtml}</div>
+        </div>
+        <div class="bc-licensing">${licHtml}</div>
+      </div>`;
+
+    catalog.appendChild(card);
+
+    // staggered reveal
+    setTimeout(()=>{
+      card.classList.add('vis');
+      // attach hover cursor
+      card.querySelectorAll('a,button').forEach(el=>{
+        el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+        el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+      });
+    }, idx*40);
+  });
+}
+
+/* ─── PLAY ─── */
+function togglePlay(id){
+  if(currentPlayId===id){
+    stopPlay();return;
+  }
+  stopPlay();
+  currentPlayId=id;
+  const card=document.getElementById('card-'+id);
+  const pb=document.getElementById('pb-'+id);
+  const sf=document.getElementById('sf-'+id);
+  const pt=document.getElementById('pt-'+id);
+  card.classList.add('playing');
+  pt.outerHTML=`<div class="ppause" id="pt-${id}"><span></span><span></span></div>`;
+  playProgress=0;
+  // 30s simulated playback
+  const duration=30;
+  function tick(){
+    playProgress+=1;
+    const pct=Math.min((playProgress/duration)*100,100)+'%';
+    if(pb)pb.style.width=pct;
+    if(sf)sf.style.width=pct;
+    if(playProgress>=duration){stopPlay();return;}
+    playTimer=setTimeout(tick,1000);
+  }
+  tick();
+}
+
+function stopPlay(){
+  if(currentPlayId){
+    const card=document.getElementById('card-'+currentPlayId);
+    if(card){
+      card.classList.remove('playing');
+      const pb=document.getElementById('pb-'+currentPlayId);
+      const sf=document.getElementById('sf-'+currentPlayId);
+      const pt=document.getElementById('pt-'+currentPlayId);
+      if(pb)pb.style.width='0%';
+      if(sf){sf.style.transition='none';sf.style.width='0%';setTimeout(()=>{if(sf)sf.style.transition='';},50);}
+      if(pt)pt.outerHTML=`<div class="ptri" id="pt-${currentPlayId}"></div>`;
+    }
+  }
+  clearTimeout(playTimer);
+  currentPlayId=null;
+  playProgress=0;
+}
+
+/* ─── MODAL ─── */
+function openModal(id){
+  const beat=BEATS.find(b=>b.id===id);
+  if(!beat)return;
+  document.getElementById('modal-beat-name').textContent=beat.name;
+  document.getElementById('modal-beat-meta').textContent=`${beat.bpm} BPM · ${beat.key} · ${beat.genre.charAt(0).toUpperCase()+beat.genre.slice(1)}`;
+  const tiersEl=document.getElementById('modal-tiers');
+  tiersEl.innerHTML=TIER_NAMES.map((name,i)=>`
+    <div class="modal-tier${i===1?' best':''}">
+      <div class="mt-top">
+        <div>
+          <div class="mt-name">${name} ${i===1?'<span class="mt-badge">Popular</span>':''}</div>
+        </div>
+        <div class="mt-price">$${beat.prices[i]}</div>
+      </div>
+      <div class="mt-features">
+        ${TIER_FEATS[i].map((f,fi)=>`<div class="mt-feat"><div class="mt-feat-dot${fi===4&&i<2?' no':''}"></div>${f}</div>`).join('')}
+      </div>
+      <button class="mt-cta">Purchase ${name} — $${beat.prices[i]}</button>
+    </div>`).join('');
+  document.getElementById('modal').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeModal(){
+  document.getElementById('modal').classList.remove('open');
+  document.body.style.overflow='';
+}
+document.getElementById('modal').addEventListener('click',function(e){
+  if(e.target===this)closeModal();
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+
+/* ─── FILTERS ─── */
+document.querySelectorAll('.fb').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    const group=this.dataset.filter;
+    document.querySelectorAll(`[data-filter="${group}"]`).forEach(b=>b.classList.remove('on'));
+    this.classList.add('on');
+    activeFilters[group]=this.dataset.val;
+    buildCatalog();
+  });
+});
+
+/* ─── SORT ─── */
+document.querySelectorAll('.sort-btn').forEach(btn=>{
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.sort-btn').forEach(b=>b.classList.remove('on'));
+    this.classList.add('on');
+    activeSort=this.dataset.sort;
+    buildCatalog();
+  });
+});
+
+/* ─── HOVER CURSOR (nav) ─── */
+document.querySelectorAll('a,button').forEach(el=>{
+  el.addEventListener('mouseenter',()=>document.body.classList.add('hov'));
+  el.addEventListener('mouseleave',()=>document.body.classList.remove('hov'));
+});
+
+/* ─── INIT ─── */
+buildCatalog();
+</script>
+</body>
+</html>
