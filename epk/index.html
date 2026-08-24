@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NOYZE KOMPLAYNT — EPK</title>
+<meta name="description" content="NOYZE KOMPLAYNT — San Diego/LA tech house producer & DJ. Electronic press kit: music, shows, booking.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Anton&family=Archivo:ital,wght@0,400;0,500;0,700;1,400&family=Share+Tech+Mono&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --black:#050505; --ink:#0d0d0d; --panel:#111; --card:#151515;
+    --border:#1f1f1f; --border2:#2a2a2a; --yellow:#f5d000; --yellow2:#e8c400;
+    --white:#f2eed8; --muted:#4a4a4a; --mid:#777;
+    --fd:'Anton',sans-serif; --fb:'Archivo',sans-serif; --fm:'Share Tech Mono',monospace;
+  }
+  *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--black);color:var(--white);font-family:var(--fb);overflow-x:hidden}
+  a{color:inherit}
+  .wrap{max-width:820px;margin:0 auto;padding:0 20px}
+
+  header{padding:22px 0 10px;display:flex;align-items:center;justify-content:space-between}
+  .logo{font-family:var(--fd);font-size:15px;letter-spacing:3px;text-transform:uppercase}
+  .logo em{color:var(--yellow);font-style:normal}
+  .tag{font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--mid);text-transform:uppercase}
+
+  .hero{position:relative;height:56vh;min-height:320px;max-height:520px;overflow:hidden}
+  .hero img{width:100%;height:100%;object-fit:cover;display:block;filter:saturate(1.05)}
+  .hero::after{content:'';position:absolute;inset:0;background:linear-gradient(180deg,rgba(5,5,5,.15) 0%,rgba(5,5,5,.55) 65%,var(--black) 100%)}
+  .hero-content{position:absolute;left:0;right:0;bottom:0;padding:0 20px 26px;z-index:2}
+  .hero-content .wrap{padding:0}
+  h1{font-family:var(--fd);font-size:clamp(36px,8vw,64px);letter-spacing:1px;text-transform:uppercase;line-height:.95}
+  .hook{font-family:var(--fm);font-size:12px;letter-spacing:1.5px;color:var(--yellow);text-transform:uppercase;margin-top:10px}
+
+  section{padding:34px 0;border-top:1px solid var(--border)}
+  .stag{font-family:var(--fm);font-size:10px;letter-spacing:3px;color:var(--yellow);text-transform:uppercase;margin-bottom:14px}
+
+  .player-frame{border:1px solid var(--border2);border-radius:8px;overflow:hidden}
+  .player-links{display:flex;gap:16px;flex-wrap:wrap;margin-top:14px;font-family:var(--fm);font-size:12px}
+  .player-links a{text-decoration:none;color:var(--white);border-bottom:1px solid var(--yellow);padding-bottom:2px}
+  .player-links a:hover{color:var(--yellow)}
+
+  .bio-text{font-size:15px;line-height:1.7;color:#dcd8c8;max-width:680px}
+  .bio-text b{color:var(--white)}
+
+  .facts{display:flex;gap:8px;flex-wrap:wrap;margin-top:18px}
+  .facts span{border:1px solid var(--border2);color:var(--yellow);font-family:var(--fm);font-size:10px;letter-spacing:1px;text-transform:uppercase;padding:6px 10px;border-radius:3px}
+
+  .flyer-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+  .flyer-grid img{width:100%;aspect-ratio:1/1;object-fit:cover;display:block;border:1px solid var(--border2);border-radius:4px}
+  .flyer-note{font-family:var(--fm);font-size:11px;color:var(--mid);margin-top:12px;letter-spacing:.5px}
+
+  .stats-row{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  @media(min-width:600px){.stats-row{grid-template-columns:repeat(4,1fr)}}
+  .stat{border:1px solid var(--border2);border-radius:6px;padding:16px 14px}
+  .stat b{display:block;font-family:var(--fd);font-size:26px;color:var(--yellow)}
+  .stat span{font-family:var(--fm);font-size:10px;letter-spacing:1px;color:var(--mid);text-transform:uppercase;margin-top:4px;display:block}
+
+  .visuals-teaser{display:flex;gap:10px;flex-wrap:wrap}
+  .visuals-teaser div{flex:1;min-width:140px;border:1px solid var(--border2);border-radius:6px;padding:16px;font-size:13px;line-height:1.6;color:#c9c4b4}
+
+  .book-box{border:1px solid var(--yellow);border-radius:8px;padding:22px 20px;display:flex;flex-direction:column;gap:16px}
+  @media(min-width:560px){.book-box{flex-direction:row;align-items:center;justify-content:space-between}}
+  .rate{font-family:var(--fd);font-size:28px;color:var(--white)}
+  .rate small{display:block;font-family:var(--fm);font-size:10px;letter-spacing:2px;color:var(--yellow);text-transform:uppercase;margin-bottom:4px}
+  .contact-block{font-size:13px;line-height:1.8}
+  .contact-block b{color:var(--yellow);font-size:15px}
+  .btn{display:inline-block;background:var(--yellow);color:var(--black);font-family:var(--fm);font-size:12px;letter-spacing:2px;text-transform:uppercase;font-weight:700;padding:12px 22px;text-decoration:none;border-radius:4px;margin-top:6px}
+  .btn:hover{background:var(--yellow2)}
+
+  footer{padding:24px 0 40px;display:flex;justify-content:space-between;flex-wrap:wrap;gap:8px;font-family:var(--fm);font-size:10px;letter-spacing:1.5px;color:var(--muted);text-transform:uppercase}
+</style>
+</head>
+<body>
+
+<header class="wrap">
+  <div class="logo">NOYZE <em>KOMPLAYNT</em></div>
+  <div class="tag">Electronic Press Kit</div>
+</header>
+
+<div class="hero">
+  <img src="img/banner.jpg" alt="Noyze Komplaynt">
+  <div class="hero-content">
+    <div class="wrap">
+      <h1>NOYZE<br>KOMPLAYNT</h1>
+      <div class="hook">Tech house · San Diego / Los Angeles · Heavy 126 grooves, hip-hop weight</div>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <section id="listen">
+    <div class="stag">Listen First</div>
+    <div class="player-frame">
+      <iframe style="border-radius:0" src="https://open.spotify.com/embed/artist/7f5nXpyHzNp7vJj6nP8k96?utm_source=generator&theme=0" width="100%" height="352" frameborder="0" allowfullscreen loading="lazy" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" title="Noyze Komplaynt on Spotify"></iframe>
+    </div>
+    <div class="player-links">
+      <a href="https://soundcloud.com/noyzekomplaynt/rec005" target="_blank" rel="noopener">Full DJ mix, REC005 (21 min) →</a>
+      <a href="https://soundcloud.com/noyzekomplaynt" target="_blank" rel="noopener">SoundCloud →</a>
+    </div>
+  </section>
+
+  <section id="bio">
+    <div class="stag">Bio</div>
+    <p class="bio-text"><b>NOYZE KOMPLAYNT</b> is a half-Persian club producer and DJ out of San Diego, raised between Los Angeles and San Diego on Middle Eastern music, rap, rock, metal and techno. The current run is tech house with hip-hop weight, heavy 126-BPM grooves built for rooms with real subs. He came up throwing parties before making the music for them, and now runs his own San Diego/Los Angeles club night, <b>LOCAL FREQUENCIES</b>.</p>
+    <div class="facts">
+      <span>Tech house · 126 BPM</span>
+      <span>Runs LOCAL FREQUENCIES</span>
+      <span>Own visual system</span>
+      <span>@noyzekomplaynt · verified · 6.1k</span>
+    </div>
+  </section>
+
+  <section id="shows">
+    <div class="stag">Recent &amp; Upcoming Shows</div>
+    <div class="flyer-grid">
+      <img src="img/flyer-1.jpg" alt="Local Frequencies flyer">
+      <img src="img/flyer-2.jpg" alt="Reunite presents Local Frequencies flyer">
+      <img src="img/flyer-3.jpg" alt="Ibiza Sundays flyer">
+      <img src="img/flyer-4.jpg" alt="Local Frequencies flyer">
+      <img src="img/flyer-5.jpg" alt="Local Frequencies flyer">
+      <img src="img/flyer-6.jpg" alt="ON_1 Ibiza flyer">
+    </div>
+    <div class="flyer-note">3oz Dive Club (San Diego) · Hideaway (San Diego) · LOCAL FREQUENCIES @ Jungle Hollywood (Los Angeles) — full calendar on Instagram</div>
+  </section>
+
+  <section id="stats">
+    <div class="stag">Track Record</div>
+    <div class="stats-row">
+      <div class="stat"><b>6.1k</b><span>Verified IG</span></div>
+      <div class="stat"><b>3</b><span>Releases out now</span></div>
+      <div class="stat"><b>1</b><span>Club night run (LF)</span></div>
+      <div class="stat"><b>Paid</b><span>Bloom SD booking</span></div>
+    </div>
+  </section>
+
+  <section id="visuals">
+    <div class="stag">Live Production</div>
+    <div class="visuals-teaser">
+      <div>Brings his own visual system: club-ready loops and two 30-minute set visuals, built in-house. No VJ needed — plug in and go.</div>
+      <div>Cover art, Spotify Canvas, and the live show all share one look per release — a coherent identity, not a random loop reel.</div>
+    </div>
+  </section>
+
+  <section id="book">
+    <div class="stag">Book</div>
+    <div class="book-box">
+      <div class="rate"><small>DJ sets · clubs · festivals · private</small>$100–$500 flat</div>
+      <div class="contact-block">
+        <b>Bookings@noyzekomplaynt.com</b><br>
+        Based in San Diego · available worldwide<br>
+        Rider: a USB for the CDJs, that's it.<br>
+        <a class="btn" href="/epk.pdf">Download PDF one-sheet</a>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<footer class="wrap">
+  <span>NOYZE KOMPLAYNT · EPK · 2026</span>
+  <span><a href="https://noyzekomplaynt.com">noyzekomplaynt.com</a></span>
+</footer>
+
+</body>
+</html>
