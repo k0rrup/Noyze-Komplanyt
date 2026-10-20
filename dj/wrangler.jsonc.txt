@@ -1,0 +1,1 @@
+﻿{ "name": "noyze-dj", "compatibility_date": "2026-10-12", "assets": { "directory": "public" } }
