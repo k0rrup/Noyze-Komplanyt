@@ -273,7 +273,7 @@
 <div class="strip rv">
   <div class="scell"><div class="snum" id="c1">49</div><div class="slbl">Tracks Released</div></div>
   <div class="scell"><div class="snum" id="c2">3</div><div class="slbl">Singles on Spotify</div></div>
-  <div class="scell"><div class="snum" id="c3">6157</div><div class="slbl">Instagram Followers</div></div>
+  <div class="scell"><div class="snum" id="c3">6416</div><div class="slbl">Instagram Followers</div></div>
   <div class="scell"><div class="snum" id="c4">66</div><div class="slbl">Club Visual Loops</div></div>
 </div>
 
@@ -444,7 +444,7 @@ const rail=document.getElementById('tr');
 let counted=false;
 function runCounters(){
   if(counted)return;counted=true;
-  [{id:'c1',t:49,s:''},{id:'c2',t:3,s:''},{id:'c3',t:6157,s:''},{id:'c4',t:66,s:''}].forEach(({id,t,s})=>{
+  [{id:'c1',t:49,s:''},{id:'c2',t:3,s:''},{id:'c3',t:6416,s:''},{id:'c4',t:66,s:''}].forEach(({id,t,s})=>{
     let n=0;const step=Math.ceil(t/45),el=document.getElementById(id);
     const iv=setInterval(()=>{n=Math.min(n+step,t);el.textContent=n+s;if(n>=t)clearInterval(iv);},30);
   });
